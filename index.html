@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI × Design Workflows — Knowledge Sharing Session</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #1a1a24;
+    --border: #2a2a3a;
+    --accent: #7c6af7;
+    --accent2: #e8c547;
+    --accent3: #4af0c4;
+    --text: #e8e8f0;
+    --muted: #7070a0;
+    --tag-bg: rgba(124,106,247,0.12);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.65;
+    min-height: 100vh;
+  }
+
+  /* NAV */
+  nav {
+    position: sticky; top:0; z-index:100;
+    background: rgba(10,10,15,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 40px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800; font-size: 15px; letter-spacing: .04em;
+    color: var(--accent);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .nav-logo span { color: var(--text); }
+  .nav-tabs {
+    display: flex; gap: 4px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px; padding: 4px;
+  }
+  .nav-tab {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; letter-spacing: .06em;
+    padding: 6px 14px; border-radius: 7px;
+    cursor: pointer; border: none; background: transparent;
+    color: var(--muted); transition: all .2s;
+  }
+  .nav-tab.active, .nav-tab:hover { background: var(--surface); color: var(--text); }
+  .nav-tag {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    color: var(--accent3); border: 1px solid rgba(74,240,196,0.3);
+    padding: 4px 10px; border-radius: 20px;
+  }
+
+  /* SECTIONS */
+  section { display: none; animation: fadeUp .4s ease; }
+  section.active { display: block; }
+  @keyframes fadeUp {
+    from { opacity:0; transform: translateY(16px); }
+    to   { opacity:1; transform: translateY(0); }
+  }
+
+  /* HERO */
+  .hero {
+    padding: 80px 40px 60px;
+    max-width: 1100px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
+  }
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    letter-spacing: .14em; color: var(--accent3);
+    text-transform: uppercase; margin-bottom: 20px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .hero-eyebrow::before {
+    content: ''; width: 24px; height: 1px; background: var(--accent3);
+  }
+  .hero h1 {
+    font-family: 'Syne', sans-serif; font-weight: 800;
+    font-size: clamp(36px, 5vw, 64px); line-height: 1.05;
+    margin-bottom: 28px;
+  }
+  .hero h1 em { font-style: normal; color: var(--accent); }
+  .hero-desc { font-size: 16px; color: var(--muted); margin-bottom: 36px; max-width: 460px; }
+  .hero-meta {
+    display: flex; flex-wrap: wrap; gap: 12px;
+  }
+  .meta-chip {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border);
+    color: var(--muted); display: flex; align-items: center; gap: 6px;
+  }
+  .meta-chip .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+  }
+  .dot-purple { background: var(--accent); }
+  .dot-yellow { background: var(--accent2); }
+  .dot-teal  { background: var(--accent3); }
+
+  /* RIGHT PANEL */
+  .hero-panel {
+    background: var(--surface);
+    border: 1px solid var(--border); border-radius: 16px;
+    padding: 28px; position: relative; overflow: hidden;
+  }
+  .hero-panel::before {
+    content: ''; position: absolute; top:-60px; right:-60px;
+    width:180px; height:180px; border-radius:50%;
+    background: radial-gradient(circle, rgba(124,106,247,.25) 0%, transparent 70%);
+  }
+  .panel-title {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    letter-spacing: .12em; text-transform: uppercase; color: var(--muted);
+    margin-bottom: 20px;
+  }
+  .agenda-list { list-style: none; }
+  .agenda-list li {
+    display: flex; align-items: flex-start; gap: 14px;
+    padding: 12px 0; border-bottom: 1px solid var(--border);
+    font-size: 14px;
+  }
+  .agenda-list li:last-child { border-bottom: none; }
+  .agenda-num {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    color: var(--accent); min-width: 22px; margin-top: 2px;
+  }
+  .agenda-time {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    color: var(--muted); margin-top: 3px; display: block;
+  }
+
+  /* CONTENT AREA */
+  .content-area { max-width: 1100px; margin: 0 auto; padding: 40px; }
+
+  /* SECTION HEADER */
+  .sec-header {
+    display: flex; align-items: flex-start; gap: 20px;
+    margin-bottom: 40px; padding-bottom: 28px;
+    border-bottom: 1px solid var(--border);
+  }
+  .sec-icon {
+    width: 52px; height: 52px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
+  }
+  .icon-purple { background: rgba(124,106,247,.15); border: 1px solid rgba(124,106,247,.3); }
+  .icon-yellow { background: rgba(232,197,71,.12); border: 1px solid rgba(232,197,71,.3); }
+  .icon-teal   { background: rgba(74,240,196,.1);  border: 1px solid rgba(74,240,196,.3); }
+  .sec-header h2 {
+    font-family: 'Syne', sans-serif; font-weight: 700;
+    font-size: 28px; margin-bottom: 6px;
+  }
+  .sec-header p { color: var(--muted); font-size: 15px; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-bottom: 32px; }
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; padding: 24px; position: relative; overflow: hidden;
+    transition: border-color .2s, transform .2s;
+  }
+  .card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .card-label {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    letter-spacing: .1em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 12px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .card h3 { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 700; margin-bottom: 10px; }
+  .card p  { font-size: 13.5px; color: var(--muted); line-height: 1.6; }
+  .card-accent { position: absolute; top:0; right:0; width:3px; height:100%; }
+  .ca-purple { background: var(--accent); }
+  .ca-yellow { background: var(--accent2); }
+  .ca-teal   { background: var(--accent3); }
+
+  /* USE CASE BLOCKS */
+  .usecase {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; margin-bottom: 20px; overflow: hidden;
+  }
+  .usecase-header {
+    padding: 20px 24px;
+    display: flex; align-items: center; gap: 14px;
+    cursor: pointer;
+    transition: background .2s;
+  }
+  .usecase-header:hover { background: var(--surface2); }
+  .uc-num {
+    font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 500;
+    background: var(--tag-bg); color: var(--accent);
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .uc-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 16px; flex:1; }
+  .uc-badge {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    padding: 3px 10px; border-radius: 20px; border: 1px solid;
+  }
+  .badge-purple { color: var(--accent); border-color: rgba(124,106,247,.4); }
+  .badge-yellow { color: var(--accent2); border-color: rgba(232,197,71,.4); }
+  .badge-teal   { color: var(--accent3); border-color: rgba(74,240,196,.4); }
+  .uc-chevron { color: var(--muted); font-size: 12px; transition: transform .2s; }
+  .usecase-body {
+    padding: 0 24px; max-height: 0; overflow: hidden; transition: max-height .4s ease, padding .3s;
+  }
+  .usecase-body.open { max-height: 1200px; padding: 4px 24px 24px; }
+  .uc-desc { color: var(--muted); font-size: 14px; margin-bottom: 16px; }
+  .uc-steps { list-style: none; margin-bottom: 20px; }
+  .uc-steps li {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 0; border-bottom: 1px solid var(--border);
+    font-size: 13.5px;
+  }
+  .uc-steps li:last-child { border-bottom: none; }
+  .step-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent); margin-top: 7px; flex-shrink: 0;
+  }
+  .uc-prompt {
+    background: var(--bg); border: 1px solid var(--border);
+    border-left: 3px solid var(--accent3); border-radius: 8px;
+    padding: 14px 16px; font-family: 'DM Mono', monospace;
+    font-size: 12px; color: var(--accent3); line-height: 1.7;
+    margin-top: 12px;
+  }
+  .uc-prompt-label {
+    font-size: 10px; color: var(--muted); letter-spacing: .1em;
+    text-transform: uppercase; margin-bottom: 8px;
+  }
+
+  /* COMPARISON TABLE */
+  .compare-table {
+    width: 100%; border-collapse: collapse;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; overflow: hidden; margin-bottom: 32px;
+  }
+  .compare-table th {
+    background: var(--surface2); padding: 14px 20px;
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    letter-spacing: .08em; text-transform: uppercase;
+    color: var(--muted); text-align: left; border-bottom: 1px solid var(--border);
+  }
+  .compare-table td {
+    padding: 14px 20px; border-bottom: 1px solid var(--border);
+    font-size: 13.5px; vertical-align: top;
+  }
+  .compare-table tr:last-child td { border-bottom: none; }
+  .compare-table tr:hover td { background: rgba(255,255,255,.02); }
+  .th-tool { color: var(--accent) !important; }
+  .td-strong { font-weight: 500; }
+  .pill {
+    display: inline-block; font-family: 'DM Mono', monospace;
+    font-size: 10px; padding: 2px 8px; border-radius: 4px; margin: 2px;
+  }
+  .pill-purple { background: rgba(124,106,247,.15); color: var(--accent); }
+  .pill-yellow { background: rgba(232,197,71,.12); color: var(--accent2); }
+  .pill-teal   { background: rgba(74,240,196,.1); color: var(--accent3); }
+
+  /* DEMO BLOCK */
+  .demo-block {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 16px; padding: 28px; margin-bottom: 24px;
+  }
+  .demo-label {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    letter-spacing: .12em; text-transform: uppercase;
+    color: var(--accent2); margin-bottom: 16px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .demo-label::before { content:'▶'; font-size:8px; }
+  .demo-block h3 { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+  .demo-block p { color: var(--muted); font-size: 14px; margin-bottom: 20px; }
+  .demo-steps { display: flex; flex-direction: column; gap: 10px; }
+  .demo-step {
+    display: flex; gap: 14px; align-items: flex-start;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px;
+  }
+  .ds-num {
+    font-family: 'DM Mono', monospace; font-size: 12px;
+    color: var(--accent2); min-width: 22px; font-weight: 500; margin-top: 1px;
+  }
+  .ds-content { flex: 1; }
+  .ds-title { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
+  .ds-detail { font-size: 12.5px; color: var(--muted); }
+  .ds-code {
+    font-family: 'DM Mono', monospace; font-size: 11.5px;
+    background: rgba(74,240,196,.06); border: 1px solid rgba(74,240,196,.15);
+    color: var(--accent3); border-radius: 6px; padding: 8px 12px; margin-top: 8px;
+    line-height: 1.6;
+  }
+
+  /* TIPS */
+  .tips-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .tip-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px;
+  }
+  .tip-icon { font-size: 24px; margin-bottom: 10px; }
+  .tip-card h4 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; margin-bottom: 8px; }
+  .tip-card p { font-size: 13px; color: var(--muted); }
+
+  /* FOOTER */
+  .page-footer {
+    max-width: 1100px; margin: 40px auto 0; padding: 28px 40px;
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted);
+  }
+
+  /* GLOW BG */
+  .glow-bg {
+    position: fixed; pointer-events: none; z-index:0;
+    top: -100px; left: 50%; transform: translateX(-50%);
+    width: 600px; height: 400px;
+    background: radial-gradient(ellipse, rgba(124,106,247,.06) 0%, transparent 70%);
+  }
+
+  @media (max-width: 768px) {
+    .hero { grid-template-columns: 1fr; padding: 40px 20px; gap: 32px; }
+    .content-area { padding: 24px 20px; }
+    .card-grid { grid-template-columns: 1fr; }
+    .tips-grid { grid-template-columns: 1fr; }
+    nav { padding: 12px 20px; }
+    .nav-tabs { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="glow-bg"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">✦ <span>AI × Design</span> Session</div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showSection('overview')">Overview</button>
+    <button class="nav-tab" onclick="showSection('figma-make')">Figma Make</button>
+    <button class="nav-tab" onclick="showSection('claude-mcp')">Claude MCP</button>
+    <button class="nav-tab" onclick="showSection('demo')">Demo Script</button>
+    <button class="nav-tab" onclick="showSection('tips')">Tips</button>
+  </div>
+  <div class="nav-tag">90 min session</div>
+</nav>
+
+<!-- ═══════════════ OVERVIEW ═══════════════ -->
+<section id="overview" class="active">
+  <div class="hero">
+    <div>
+      <div class="hero-eyebrow">Knowledge Sharing Session</div>
+      <h1>Designing with<br><em>AI</em> in your<br>workflow</h1>
+      <p class="hero-desc">A practical guide to integrating Figma Make and Claude via Figma MCP into your everyday design process — from ideation to handoff.</p>
+      <div class="hero-meta">
+        <div class="meta-chip"><span class="dot dot-purple"></span>Figma Make</div>
+        <div class="meta-chip"><span class="dot dot-yellow"></span>Claude MCP</div>
+        <div class="meta-chip"><span class="dot dot-teal"></span>Live Demos</div>
+      </div>
+    </div>
+    <div class="hero-panel">
+      <div class="panel-title">Session Agenda</div>
+      <ul class="agenda-list">
+        <li>
+          <span class="agenda-num">00</span>
+          <div>
+            <div>Introduction & Landscape</div>
+            <span class="agenda-time">0:00 — 0:10 · 10 min</span>
+          </div>
+        </li>
+        <li>
+          <span class="agenda-num">01</span>
+          <div>
+            <div>Figma Make — What it is & Use Cases</div>
+            <span class="agenda-time">0:10 — 0:35 · 25 min</span>
+          </div>
+        </li>
+        <li>
+          <span class="agenda-num">02</span>
+          <div>
+            <div>Claude via Figma MCP — Deep Dive</div>
+            <span class="agenda-time">0:35 — 1:00 · 25 min</span>
+          </div>
+        </li>
+        <li>
+          <span class="agenda-num">03</span>
+          <div>
+            <div>Live Demo: End-to-End Workflow</div>
+            <span class="agenda-time">1:00 — 1:20 · 20 min</span>
+          </div>
+        </li>
+        <li>
+          <span class="agenda-num">04</span>
+          <div>
+            <div>Best Practices, Q&A</div>
+            <span class="agenda-time">1:20 — 1:30 · 10 min</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="content-area">
+    <div class="sec-header">
+      <div class="sec-icon icon-purple">🧭</div>
+      <div>
+        <h2>Why AI in Design Now?</h2>
+        <p>Setting the context before diving into tools</p>
+      </div>
+    </div>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-accent ca-purple"></div>
+        <div class="card-label">⚡ Speed</div>
+        <h3>From idea to prototype faster</h3>
+        <p>AI reduces the time from a rough concept to a testable prototype from hours to minutes — preserving creative momentum.</p>
+      </div>
+      <div class="card">
+        <div class="card-accent ca-yellow"></div>
+        <div class="card-label">🔁 Iteration</div>
+        <h3>More variations, less effort</h3>
+        <p>Generate 10 directions instead of 3. AI handles the mechanical execution so you focus on design judgment and curation.</p>
+      </div>
+      <div class="card">
+        <div class="card-accent ca-teal"></div>
+        <div class="card-label">🤝 Collaboration</div>
+        <h3>Bridge design & development</h3>
+        <p>AI tools that understand both design context and code dramatically reduce friction at the handoff boundary.</p>
+      </div>
+      <div class="card">
+        <div class="card-accent ca-purple"></div>
+        <div class="card-label">📐 Consistency</div>
+        <h3>Design system enforcement</h3>
+        <p>AI can apply tokens, check component usage, and flag violations at a scale no human reviewer can match.</p>
+      </div>
+    </div>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Dimension</th>
+          <th class="th-tool">Figma Make</th>
+          <th class="th-tool">Claude via Figma MCP</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="td-strong">Primary mode</td>
+          <td>Conversational UI generation in Figma</td>
+          <td>AI agent with direct Figma file access via Claude</td>
+        </tr>
+        <tr>
+          <td class="td-strong">Best for</td>
+          <td>Rapid wireframing, component exploration, layout generation</td>
+          <td>Complex automation, batch operations, design audits, intelligent analysis</td>
+        </tr>
+        <tr>
+          <td class="td-strong">Interface</td>
+          <td>Figma sidebar plugin</td>
+          <td>Claude.ai chat (with MCP connector)</td>
+        </tr>
+        <tr>
+          <td class="td-strong">Output</td>
+          <td>Figma frames, components, layouts</td>
+          <td>Actions inside Figma (create, edit, move, audit) + text responses</td>
+        </tr>
+        <tr>
+          <td class="td-strong">Strengths</td>
+          <td>
+            <span class="pill pill-purple">fast prototyping</span>
+            <span class="pill pill-purple">visual iteration</span>
+            <span class="pill pill-purple">component gen</span>
+          </td>
+          <td>
+            <span class="pill pill-teal">deep reasoning</span>
+            <span class="pill pill-teal">bulk edits</span>
+            <span class="pill pill-teal">cross-file ops</span>
+          </td>
+        </tr>
+        <tr>
+          <td class="td-strong">Skill curve</td>
+          <td>Low — visual prompt interface</td>
+          <td>Medium — requires prompt craft + MCP setup</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══════════════ FIGMA MAKE ═══════════════ -->
+<section id="figma-make">
+  <div class="content-area">
+    <div class="sec-header">
+      <div class="sec-icon icon-purple">✦</div>
+      <div>
+        <h2>Figma Make</h2>
+        <p>AI-powered UI generation built directly into Figma — describe what you want, watch it appear.</p>
+      </div>
+    </div>
+
+    <!-- How it works -->
+    <div class="card-grid" style="margin-bottom:36px;">
+      <div class="card">
+        <div class="card-label">How it works</div>
+        <h3>Prompt → Prototype</h3>
+        <p>Figma Make takes a natural language prompt and generates a complete, editable Figma design — frames, components, variants, auto-layout and all.</p>
+      </div>
+      <div class="card">
+        <div class="card-label">What it understands</div>
+        <h3>Design intent & context</h3>
+        <p>It infers layout patterns, spacing hierarchies, component structures, and applies them using Figma's native primitives — not just flat art.</p>
+      </div>
+      <div class="card">
+        <div class="card-label">Where to access</div>
+        <h3>Figma Sidebar</h3>
+        <p>Available in the right panel under Make. Works in Design mode. Can reference selected components, styles from your local file or libraries.</p>
+      </div>
+    </div>
+
+    <div class="sec-header" style="margin-top:40px;">
+      <div><h2 style="font-size:22px;">Use Cases</h2></div>
+    </div>
+
+    <!-- USE CASES -->
+    <div class="usecase">
+      <div class="usecase-header" onclick="toggleUC(this)">
+        <div class="uc-num">01</div>
+        <div class="uc-title">Rapid Wireframe Generation</div>
+        <span class="uc-badge badge-purple">Exploration</span>
+        <span class="uc-chevron">▼</span>
+      </div>
+      <div class="usecase-body open">
+        <p class="uc-desc">Jump from a blank canvas to a structured wireframe in seconds. Great for early-stage exploration when the layout is still undefined.</p>
+        <ul class="uc-steps">
+          <li><span class="step-dot"></span>Open Figma Make panel</li>
+          <li><span class="step-dot"></span>Describe the screen type, content blocks, and key user actions</li>
+          <li><span class="step-dot"></span>Accept or iterate with follow-up prompts ("make the header taller", "add a sidebar nav")</li>
+          <li><span class="step-dot"></span>Convert generated layers into proper auto-layout components</li>
+        </ul>
+        <div class="uc-prompt-label">Example prompt</div>
+        <div class="uc-prompt">"Create a SaaS dashboard wireframe with a sidebar navigation, a KPI cards row at the top, a main chart area, and a recent activity feed on the right."</div>
+      </div>
+    </div>
+
+    <div class="usecase">
+      <div class="usecase-header" onclick="toggleUC(this)">
+        <div class="uc-num">02</div>
+        <div class="uc-title">Component Variant Generation</div>
+        <span class="uc-badge badge-yellow">Systems</span>
+        <span class="uc-chevron">▼</span>
+      </div>
+      <div class="usecase-body">
+        <p class="uc-desc">Generate full component sets with all states and variants — buttons, form inputs, cards, modals — that align to your existing design system tokens.</p>
+        <ul class="uc-steps">
+          <li><span class="step-dot"></span>Select an existing component or provide a description</li>
+          <li><span class="step-dot"></span>Prompt Figma Make to generate all required variants</li>
+          <li><span class="step-dot"></span>Review variants and adjust naming/property structure</li>
+          <li><span class="step-dot"></span>Publish to your team library</li>
+        </ul>
+        <div class="uc-prompt-label">Example prompt</div>
+        <div class="uc-prompt">"Generate a Button component with variants: Size (sm/md/lg), State (default/hover/disabled/loading), Type (primary/secondary/ghost/destructive). Use our existing color tokens."</div>
+      </div>
+    </div>
+
+    <div class="usecase">
+      <div class="usecase-header" onclick="toggleUC(this)">
+        <div class="uc-num">03</div>
+        <div class="uc-title">UI Copy & Content Population</div>
+        <span class="uc-badge badge-teal">Content</span>
+        <span class="uc-chevron">▼</span>
+      </div>
+      <div class="usecase-body">
+        <p class="uc-desc">Replace Lorem Ipsum with contextual, realistic placeholder content that matches your product domain — names, numbers, dates, microcopy.</p>
+        <ul class="uc-steps">
+          <li><span class="step-dot"></span>Select frames or components with placeholder text</li>
+          <li><span class="step-dot"></span>Prompt to populate with contextually relevant content</li>
+          <li><span class="step-dot"></span>Useful for user testing sessions and stakeholder reviews</li>
+        </ul>
+        <div class="uc-prompt-label">Example prompt</div>
+        <div class="uc-prompt">"Fill the user card components with realistic data: Vietnamese names, email addresses, realistic last login dates, and varied subscription plan labels (Free, Pro, Enterprise)."</div>
+      </div>
+    </div>
+
+    <div class="usecase">
+      <div class="usecase-header" onclick="toggleUC(this)">
+        <div class="uc-num">04</div>
+        <div class="uc-title">Responsive Layout Adaptation</div>
+        <span class="uc-badge badge-purple">Layout</span>
+        <span class="uc-chevron">▼</span>
+      </div>
+      <div class="usecase-body">
+        <p class="uc-desc">Adapt desktop designs to tablet and mobile layouts without manually rebuilding every frame. Figma Make understands responsive layout intent.</p>
+        <ul class="uc-steps">
+          <li><span class="step-dot"></span>Select the desktop frame you want to adapt</li>
+          <li><span class="step-dot"></span>Prompt for mobile/tablet version with specific breakpoint constraints</li>
+          <li><span class="step-dot"></span>Refine collapsed navigation, stacked elements, touch targets</li>
+        </ul>
+        <div class="uc-prompt-label">Example prompt</div>
+        <div class="uc-prompt">"Create a mobile (375px) version of this dashboard. Collapse the sidebar into a bottom tab bar, stack the KPI cards into a horizontal scroll row, and hide the right panel behind a floating button."</div>
+      </div>
+    </div>
+
+    <div class="usecase">
+      <div class="usecase-header" onclick="toggleUC(this)">
+        <div class="uc-num">05</div>
+        <div class="uc-title">Design System Documentation</div>
+        <span class="uc-badge badge-yellow">Documentation</span>
+        <span class="uc-chevron">▼</span>
+      </div>
+      <div class="usecase-body">
+        <p class="uc-desc">Auto-generate documentation frames for components — usage guidelines, do/don't examples, anatomy annotations.</p>
+        <ul class="uc-steps">
+          <li><span class="step-dot"></span>Select a component</li>
+          <li><span class="step-dot"></span>Ask Figma Make to generate a documentation page layout</li>
+          <li><span class="step-dot"></span>Include usage examples, anti-patterns, accessibility notes</li>
+        </ul>
+        <div class="uc-prompt-label">Example prompt</div>
+        <div class="uc-prompt">"Create a component documentation page for the Modal component. Include: anatomy diagram with labels, usage do/don't examples (2 each), size variants showcase, and a note about keyboard accessibility."</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ CLAUDE MCP ═══════════════ -->
+<section id="claude-mcp">
+  <div class="content-area">
+    <div class="sec-header">
+      <div class="sec-icon icon-teal">⬡</div>
+      <div>
+        <h2>Claude via Figma MCP</h2>
+        <p>Give Claude direct access to your Figma files — read, create, edit, and audit designs through natural language in Claude.ai.</p>
+      </div>
+    </div>
+
+    <div class="card-grid" style="margin-bottom:36px;">
+      <div class="card">
+        <div class="card-label">What is MCP?</div>
+        <h3>Model Context Protocol</h3>
+        <p>MCP is an open protocol that lets AI models connect to external tools. The Figma MCP lets Claude read and manipulate your Figma files directly.</p>
+      </div>
+      <div class="card">
+        <div class="card-label">Setup</div>
+        <h3>Connect in Claude.ai</h3>
+        <p>Enable the Figma connector in Claude.ai settings → Integrations. Authorize with your Figma account. Claude can now access your files.</p>
+      </div>
+      <div class="card">
+        <div class="card-label">What Claude can do</div>
+        <h3>Read, Create, Edit, Audit</h3>
+        <p>Read file structure and component trees, create new frames and components, update properties, run audits, and export structured summaries.</p>
+      </div>
+    </div>
+
+    <div class="sec-header" style="margin-top:40px;">
+      <div><h2 style="font-size:22px;">Use Cases</h2></div>
+    </div>
+
+    <div class="usecase">
+      <div class="usecase-header" onclick="toggleUC(this)">
+        <div class="uc-num">01</div>
+        <div class="uc-title">Design System Audit</div>
+        <span class="uc-badge badge-teal">Audit</span>
+        <span class="uc-chevron">▼</span>
+      </div>
+      <div class="usecase-body open">
+        <p class="uc-desc">Claude reads the entire Figma file and produces a detailed report: inconsistent color usage, hardcoded values that should be tokens, missing component descriptions, and accessibility flags.</p>
+        <ul class="uc-steps">
+          <li><span class="step-dot"></span>Share the Figma file URL with Claude</li>
+          <li><span class="step-dot"></span>Ask for a design system health check</li>
+          <li><span class="step-dot"></span>Claude lists: unstyed layers, non-token colors, missing descriptions, naming inconsistencies</li>
+          <li><span class="step-dot"></span>Ask Claude to fix specific issues in bulk</li>
+        </ul>
+        <div class="uc-prompt-label">Example prompt</div>
+        <div class="uc-prompt">"Audit the design system file at [URL]. List all components missing descriptions, any color styles that appear to be duplicates (similar values), and components that don't follow the naming convention [Category/Variant/State]."</div>
+      </div>
+    </div>
+
+    <div class="usecase">
+      <div class="usecase-header" onclick="toggleUC(this)">
+        <div class="uc-num">02</div>
+        <div class="uc-title">Bulk Rename & Restructure</div>
+        <span class="uc-badge badge-teal">Automation</span>
+        <span class="uc-chevron">▼</span>
+      </div>
+      <div class="usecase-body">
+        <p class="uc-desc">Rename hundreds of layers, components, or pages at once based on a pattern or convention — without clicking through each one manually.</p>
+        <ul class="uc-steps">
+          <li><span class="step-dot"></span>Describe the renaming pattern to Claude</li>
+          <li><span class="step-dot"></span>Claude identifies all matching nodes via the MCP</li>
+          <li><span class="step-dot"></span>Applies renames in batch</li>
+          <li><span class="step-dot"></span>Claude confirms the changes made</li>
+        </ul>
+        <div class="uc-prompt-label">Example prompt</div>
+        <div class="uc-prompt">"In my Figma file, rename all button components to follow the convention: Button/[Size]/[Type]/[State]. Current naming is inconsistent (btn-primary, PrimaryButton, button_primary etc.). Apply the new convention across all 47 instances."</div>
+      </div>
+    </div>
+
+    <div class="usecase">
+      <div class="usecase-header" onclick="toggleUC(this)">
+        <div class="uc-num">03</div>
+        <div class="uc-title">Dev Handoff Documentation</div>
+        <span class="uc-badge badge-yellow">Handoff</span>
+        <span class="uc-chevron">▼</span>
+      </div>
+      <div class="usecase-body">
+        <p class="uc-desc">Claude reads your Figma designs and produces structured developer documentation: spacing values, color tokens, component props, interaction notes — ready to paste into Notion or Linear.</p>
+        <ul class="uc-steps">
+          <li><span class="step-dot"></span>Point Claude to a specific screen or component</li>
+          <li><span class="step-dot"></span>Ask for a handoff spec in your preferred format</li>
+          <li><span class="step-dot"></span>Claude extracts every measurable value from the design</li>
+          <li><span class="step-dot"></span>Outputs structured markdown or JSON for dev consumption</li>
+        </ul>
+        <div class="uc-prompt-label">Example prompt</div>
+        <div class="uc-prompt">"Read the 'Checkout Flow' page in my Figma file. Generate a dev handoff document in markdown format. Include: all spacing values, color tokens used, component props for each interactive element, and any noted interaction behaviors from the comments."</div>
+      </div>
+    </div>
+
+    <div class="usecase">
+      <div class="usecase-header" onclick="toggleUC(this)">
+        <div class="uc-num">04</div>
+        <div class="uc-title">Cross-Screen Consistency Check</div>
+        <span class="uc-badge badge-teal">QA</span>
+        <span class="uc-chevron">▼</span>
+      </div>
+      <div class="usecase-body">
+        <p class="uc-desc">Claude compares multiple screens to find inconsistencies in spacing, typography, component usage, and visual hierarchy — like having a QA partner who's read every pixel.</p>
+        <ul class="uc-steps">
+          <li><span class="step-dot"></span>Share multiple screen frames or the full page</li>
+          <li><span class="step-dot"></span>Ask Claude to compare header heights, navigation patterns, button placements</li>
+          <li><span class="step-dot"></span>Get a structured inconsistency report</li>
+          <li><span class="step-dot"></span>Prioritize and fix before development</li>
+        </ul>
+        <div class="uc-prompt-label">Example prompt</div>
+        <div class="uc-prompt">"Compare all 12 screens in my 'Onboarding Flow' Figma page. Identify any inconsistencies in: primary CTA button position, heading font sizes, horizontal padding on content areas, and icon style (outline vs filled)."</div>
+      </div>
+    </div>
+
+    <div class="usecase">
+      <div class="usecase-header" onclick="toggleUC(this)">
+        <div class="uc-num">05</div>
+        <div class="uc-title">Token Architecture Planning</div>
+        <span class="uc-badge badge-purple">Tokens</span>
+        <span class="uc-chevron">▼</span>
+      </div>
+      <div class="usecase-body">
+        <p class="uc-desc">Claude reads your existing styles and variables, analyzes usage patterns, then helps you design a proper tiered token architecture (global → semantic → component).</p>
+        <ul class="uc-steps">
+          <li><span class="step-dot"></span>Ask Claude to browse your current Figma variables/styles</li>
+          <li><span class="step-dot"></span>Claude identifies the current structure and gaps</li>
+          <li><span class="step-dot"></span>Proposes a semantic token layer mapping</li>
+          <li><span class="step-dot"></span>Can create the new variable collections in Figma directly</li>
+        </ul>
+        <div class="uc-prompt-label">Example prompt</div>
+        <div class="uc-prompt">"Browse my Figma variables. I currently have only raw color values. Design a 3-tier token system: global (primitives), semantic (contextual aliases like color/background/primary), and component (button/background/default). Then create the semantic collection in my file."</div>
+      </div>
+    </div>
+
+    <div class="usecase">
+      <div class="usecase-header" onclick="toggleUC(this)">
+        <div class="uc-num">06</div>
+        <div class="uc-title">Accessibility Audit</div>
+        <span class="uc-badge badge-teal">Accessibility</span>
+        <span class="uc-chevron">▼</span>
+      </div>
+      <div class="usecase-body">
+        <p class="uc-desc">Claude runs a WCAG-aware accessibility review — checking contrast ratios, tap target sizes, text sizing, and flagging patterns that would fail accessibility requirements.</p>
+        <ul class="uc-steps">
+          <li><span class="step-dot"></span>Share the file or specific screen</li>
+          <li><span class="step-dot"></span>Claude uses figma_lint_design to run checks</li>
+          <li><span class="step-dot"></span>Returns a list of violations by WCAG level (A, AA, AAA)</li>
+          <li><span class="step-dot"></span>Suggests specific fixes for each issue</li>
+        </ul>
+        <div class="uc-prompt-label">Example prompt</div>
+        <div class="uc-prompt">"Run a WCAG AA accessibility audit on the 'Product Page' in my Figma file. List all contrast ratio failures, any text under 16px that isn't bold, interactive elements smaller than 44×44px, and missing focus states."</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ DEMO SCRIPT ═══════════════ -->
+<section id="demo">
+  <div class="content-area">
+    <div class="sec-header">
+      <div class="sec-icon icon-yellow">▶</div>
+      <div>
+        <h2>Live Demo Script</h2>
+        <p>End-to-end walkthrough: from blank canvas to dev-ready design in 20 minutes.</p>
+      </div>
+    </div>
+
+    <div class="demo-block">
+      <div class="demo-label">Demo A · Figma Make · 10 min</div>
+      <h3>Build a Settings Page from Scratch</h3>
+      <p>Demonstrate how quickly a structured, production-quality screen can emerge from a single prompt — and how to iterate with follow-ups.</p>
+      <div class="demo-steps">
+        <div class="demo-step">
+          <div class="ds-num">1.</div>
+          <div class="ds-content">
+            <div class="ds-title">Open Figma Make panel</div>
+            <div class="ds-detail">Show the audience where it lives. Mention it's available on any file, no setup needed.</div>
+          </div>
+        </div>
+        <div class="demo-step">
+          <div class="ds-num">2.</div>
+          <div class="ds-content">
+            <div class="ds-title">Enter initial prompt</div>
+            <div class="ds-code">"Design a Settings page for a B2B SaaS product. Sections: Profile, Security, Notifications, Billing, Team Members. Use a two-column layout with a sidebar nav on the left."</div>
+          </div>
+        </div>
+        <div class="demo-step">
+          <div class="ds-num">3.</div>
+          <div class="ds-content">
+            <div class="ds-title">Review and narrate what was generated</div>
+            <div class="ds-detail">Point out auto-layout, component usage, consistent spacing. Mention what's great AND what needs adjustment — show the real workflow, not perfection.</div>
+          </div>
+        </div>
+        <div class="demo-step">
+          <div class="ds-num">4.</div>
+          <div class="ds-content">
+            <div class="ds-title">Iterate with a follow-up prompt</div>
+            <div class="ds-code">"Change the sidebar to use icon + label pairs. Add a Danger Zone section at the bottom of the Profile tab with a Delete Account action in red."</div>
+          </div>
+        </div>
+        <div class="demo-step">
+          <div class="ds-num">5.</div>
+          <div class="ds-content">
+            <div class="ds-title">Generate the mobile version</div>
+            <div class="ds-code">"Create a mobile (390px) version. Replace the sidebar with a segmented control tab bar at the top. Stack all form rows vertically."</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="demo-block">
+      <div class="demo-label">Demo B · Claude MCP · 10 min</div>
+      <h3>Audit & Improve an Existing Design File</h3>
+      <p>Show Claude's ability to read, reason about, and modify a real Figma file — demonstrating the power differential from manual work.</p>
+      <div class="demo-steps">
+        <div class="demo-step">
+          <div class="ds-num">1.</div>
+          <div class="ds-content">
+            <div class="ds-title">Show the Figma connector in Claude.ai</div>
+            <div class="ds-detail">Settings → Integrations → Figma. Show it's connected. This is the setup moment — do it beforehand but walk through it briefly.</div>
+          </div>
+        </div>
+        <div class="demo-step">
+          <div class="ds-num">2.</div>
+          <div class="ds-content">
+            <div class="ds-title">Run a design system audit</div>
+            <div class="ds-code">"Open my Figma file [URL]. Audit the design system page. Tell me: how many components have missing descriptions? Are there any duplicate color styles? Which components use hardcoded colors instead of tokens?"</div>
+          </div>
+        </div>
+        <div class="demo-step">
+          <div class="ds-num">3.</div>
+          <div class="ds-content">
+            <div class="ds-title">Show Claude's output — point out structure</div>
+            <div class="ds-detail">Claude returns a structured list. Show that this would take 2–3 hours manually. Here it took 30 seconds. This is the "wow moment" for the audience.</div>
+          </div>
+        </div>
+        <div class="demo-step">
+          <div class="ds-num">4.</div>
+          <div class="ds-content">
+            <div class="ds-title">Ask Claude to fix one category</div>
+            <div class="ds-code">"Add descriptions to all 12 components that are missing them. Use this format: '[Component name] — [one sentence on purpose and key variants]'. Apply directly to the Figma file."</div>
+          </div>
+        </div>
+        <div class="demo-step">
+          <div class="ds-num">5.</div>
+          <div class="ds-content">
+            <div class="ds-title">Switch back to Figma to show the changes live</div>
+            <div class="ds-detail">Flip to Figma and show the component descriptions have been updated. This live verification is the closing moment — powerful and concrete.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ TIPS ═══════════════ -->
+<section id="tips">
+  <div class="content-area">
+    <div class="sec-header">
+      <div class="sec-icon icon-yellow">◈</div>
+      <div>
+        <h2>Best Practices & Tips</h2>
+        <p>What we've learned from working with these tools daily — what works, what doesn't.</p>
+      </div>
+    </div>
+
+    <div style="margin-bottom:36px;">
+      <h3 style="font-family:'Syne',sans-serif;font-size:18px;margin-bottom:16px;color:var(--accent);">✦ Figma Make</h3>
+      <div class="tips-grid">
+        <div class="tip-card">
+          <div class="tip-icon">🎯</div>
+          <h4>Be specific about layout constraints</h4>
+          <p>Say "two-column, 320px sidebar, 1fr main" rather than "two column layout." Precision in layout parameters yields far better results.</p>
+        </div>
+        <div class="tip-card">
+          <div class="tip-icon">📐</div>
+          <h4>Reference your design system explicitly</h4>
+          <p>Mention your token names or existing component names in the prompt. Figma Make will try to use them if your library is connected to the file.</p>
+        </div>
+        <div class="tip-card">
+          <div class="tip-icon">🔁</div>
+          <h4>Iterate incrementally</h4>
+          <p>Don't try to get everything right in one prompt. Start with structure, then refine typography, then add states. Small focused prompts beat one giant one.</p>
+        </div>
+        <div class="tip-card">
+          <div class="tip-icon">🧹</div>
+          <h4>Always clean up layers after generation</h4>
+          <p>Rename layers, convert auto-groups to proper auto-layout frames, and replace any unstyled colors with tokens before publishing to a project file.</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:36px;">
+      <h3 style="font-family:'Syne',sans-serif;font-size:18px;margin-bottom:16px;color:var(--accent3);">⬡ Claude via Figma MCP</h3>
+      <div class="tips-grid">
+        <div class="tip-card">
+          <div class="tip-icon">🔗</div>
+          <h4>Always share the full Figma URL</h4>
+          <p>Include the file URL with the specific page node ID fragment (#page-id) so Claude opens the right page directly. This saves one round-trip query.</p>
+        </div>
+        <div class="tip-card">
+          <div class="tip-icon">📋</div>
+          <h4>Ask for a summary before bulk operations</h4>
+          <p>"First, tell me what you find before making any changes." Review Claude's plan before it executes. Easier than undoing 200 renames.</p>
+        </div>
+        <div class="tip-card">
+          <div class="tip-icon">⚡</div>
+          <h4>Combine audit + fix in one session</h4>
+          <p>Instead of two separate chats, ask Claude to audit, present findings, and then say "fix items 1, 3, and 5." Maintains full context throughout.</p>
+        </div>
+        <div class="tip-card">
+          <div class="tip-icon">📤</div>
+          <h4>Use for handoff output, not handoff replacement</h4>
+          <p>Claude generates handoff specs from design — but engineers still need to verify measurements. Use it to cut documentation time by 70%, not eliminate review.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- When to use what -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px;margin-bottom:32px;">
+      <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:20px;">Decision Framework — Which tool when?</div>
+      <table class="compare-table" style="margin-bottom:0;">
+        <thead>
+          <tr>
+            <th>If you need to...</th>
+            <th class="th-tool">Use</th>
+            <th>Why</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Explore layout directions quickly</td><td><span class="pill pill-purple">Figma Make</span></td><td>Visual iteration speed</td></tr>
+          <tr><td>Generate component variants</td><td><span class="pill pill-purple">Figma Make</span></td><td>Understands Figma component structure natively</td></tr>
+          <tr><td>Populate screens with realistic content</td><td><span class="pill pill-purple">Figma Make</span></td><td>Works directly inside the design context</td></tr>
+          <tr><td>Audit design system health</td><td><span class="pill pill-teal">Claude MCP</span></td><td>Deep file reading + reasoning across all pages</td></tr>
+          <tr><td>Batch rename or restructure layers</td><td><span class="pill pill-teal">Claude MCP</span></td><td>Can script complex bulk operations</td></tr>
+          <tr><td>Generate dev handoff docs</td><td><span class="pill pill-teal">Claude MCP</span></td><td>Reads all specs and exports structured output</td></tr>
+          <tr><td>Cross-screen consistency check</td><td><span class="pill pill-teal">Claude MCP</span></td><td>Can compare multiple frames analytically</td></tr>
+          <tr><td>Creative concepting</td><td><span class="pill pill-purple">Figma Make</span></td><td>Visual output better for creative exploration</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Resources -->
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-label">📚 Resources</div>
+        <h3>Further Reading</h3>
+        <p style="margin-bottom:12px;">docs.figma.com/make — Official Figma Make documentation and prompt guides.</p>
+        <p>docs.claude.ai — Claude MCP setup guide and Figma integration documentation.</p>
+      </div>
+      <div class="card">
+        <div class="card-label">💬 Questions?</div>
+        <h3>Continue the conversation</h3>
+        <p>Post prompts, findings, and experiments to the #design-ai Slack channel. We're building a shared prompt library for the team.</p>
+      </div>
+      <div class="card">
+        <div class="card-label">🗓 Next Steps</div>
+        <h3>Action items after today</h3>
+        <p>Enable Figma Make on your current project file. Connect the Figma MCP in Claude.ai. Run one audit on an existing design system file.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="page-footer">
+  <span>AI × Design Workflows · Knowledge Sharing Session</span>
+  <span>2025 · For internal use</span>
+</div>
+
+<script>
+function showSection(id) {
+  document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function toggleUC(header) {
+  const body = header.nextElementSibling;
+  const chevron = header.querySelector('.uc-chevron');
+  body.classList.toggle('open');
+  chevron.style.transform = body.classList.contains('open') ? 'rotate(180deg)' : '';
+}
+</script>
+</body>
+</html>
